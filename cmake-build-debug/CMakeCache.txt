@@ -14,6 +14,12 @@
 # EXTERNAL cache entries
 ########################
 
+//Value Computed by CMake
+CLionProjects_BINARY_DIR:STATIC=/home/tplotkin/ComputerSystems/SemesterProject/cmake-build-debug
+
+//Value Computed by CMake
+CLionProjects_SOURCE_DIR:STATIC=/home/tplotkin/ComputerSystems/SemesterProject
+
 //Path to a program.
 CMAKE_ADDR2LINE:FILEPATH=/usr/bin/addr2line
 
