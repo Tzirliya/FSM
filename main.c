@@ -81,12 +81,18 @@ int main(int argc, char **argv) {
 
     // build fsm
     struct State fsm[MAX_STATES];
-    if (loadFSM(argv[1], fsm)) {
+    int statesCount = loadFSM(argv[1], fsm);
+    if (statesCount == ERROR) {
         return 1;
     }
 
     // print fsm
     printFSM(fsm);
+
+    // validate fsm
+    if (validateFSM(statesCount, fsm)) {
+        return 1;
+    }
 
     return 0;
 }

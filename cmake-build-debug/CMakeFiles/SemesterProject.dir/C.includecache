@@ -17,6 +17,8 @@ main.h
 /home/tplotkin/ComputerSystems/SemesterProject/main.h
 
 /home/tplotkin/ComputerSystems/SemesterProject/main.h
+ctype.h
+-
 stdlib.h
 -
 string.h
