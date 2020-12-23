@@ -74,6 +74,7 @@ CMAKE_BINARY_DIR = /home/tplotkin/ComputerSystems/SemesterProject/cmake-build-de
 
 # The main recursive "all" target.
 all: CMakeFiles/SemesterProject.dir/all
+all: CMakeFiles/Test.dir/all
 
 .PHONY : all
 
@@ -84,6 +85,7 @@ preinstall:
 
 # The main recursive "clean" target.
 clean: CMakeFiles/SemesterProject.dir/clean
+clean: CMakeFiles/Test.dir/clean
 
 .PHONY : clean
 
@@ -113,6 +115,33 @@ SemesterProject: CMakeFiles/SemesterProject.dir/rule
 CMakeFiles/SemesterProject.dir/clean:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/SemesterProject.dir/build.make CMakeFiles/SemesterProject.dir/clean
 .PHONY : CMakeFiles/SemesterProject.dir/clean
+
+#=============================================================================
+# Target rules for target CMakeFiles/Test.dir
+
+# All Build rule for target.
+CMakeFiles/Test.dir/all:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Test.dir/build.make CMakeFiles/Test.dir/depend
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Test.dir/build.make CMakeFiles/Test.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/tplotkin/ComputerSystems/SemesterProject/cmake-build-debug/CMakeFiles --progress-num=3,4 "Built target Test"
+.PHONY : CMakeFiles/Test.dir/all
+
+# Build rule for subdir invocation for target.
+CMakeFiles/Test.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/tplotkin/ComputerSystems/SemesterProject/cmake-build-debug/CMakeFiles 2
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/Test.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/tplotkin/ComputerSystems/SemesterProject/cmake-build-debug/CMakeFiles 0
+.PHONY : CMakeFiles/Test.dir/rule
+
+# Convenience name for target.
+Test: CMakeFiles/Test.dir/rule
+
+.PHONY : Test
+
+# clean rule for target.
+CMakeFiles/Test.dir/clean:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Test.dir/build.make CMakeFiles/Test.dir/clean
+.PHONY : CMakeFiles/Test.dir/clean
 
 #=============================================================================
 # Special targets to cleanup operation of make.

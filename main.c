@@ -1,6 +1,7 @@
 #include <ctype.h>
 #include <string.h>
 #include <stdio.h>
+#include "main.h"
 
 //#define MAX_STATES 50;
 //#define MAX_FILE_LINES 10000
@@ -66,35 +67,35 @@
 //    return 0;
 //}
 
+
+
 //int main(FILE* fsmDefFile, FILE* fsmInputFile) {
 int main(int argc, char **argv) {
-    printf("argv[0]: %s\n", argv[0]);
-    printf("argv[1]: %s\n", argv[1]);
-    printf("argv[2]: %s\n", argv[2]);
-    FILE* fsmDefFile = fopen(argv[1], "r");
-    //FILE* fsmDefFile = fopen("FSMDefinitionFiles/test1.fsm", "r");
-    if (!fsmDefFile) {
-        printf("Error opening fsm file\n");
+    if (argc != 3) {
+        printf("Error incorrect number of arguments.\n");
         return 1;
     }
-    FILE* fsmInputFile = fopen(argv[2], "r");
-    //FILE* fsmInputFile = fopen("FSMInputFiles/test1.inputs", "r");
-    if (!fsmInputFile) {
-        printf("Error opening input file\n");
-    }
-    int curState;
-    char input[2048];
-    int nextState;
-    while (fscanf(fsmDefFile, "%d:%[^>]>%d", &curState, input, &nextState) != EOF) {
-        printf("Cur: %d\nInput: %s\nNext: %d\n\n", curState, input, nextState);
+//    // print main args
+//    printf("argc: %d\n", argc);
+//    printf("argv[0]: %s\n", argv[0]);
+//    printf("argv[1]: %s\n", argv[1]);
+//    printf("argv[2]: %s\n", argv[2]);
+
+    // build fsm
+    struct State fsm[MAX_STATES];
+    if (loadFSM(argv[1], fsm)) {
+        return 1;
     }
 
-    if (fclose(fsmDefFile)) {
-        printf("Error closing fsm file\n");
-    }
-    if (fclose(fsmInputFile)) {
-        printf("Error closing input file\n");
-    }
-    //int fsm = loadStates("test1.fsm");
+//    // verify results manually
+//    for (int i = 0; i < 4; i++) {
+//        printf("CurState: %d\n", fsm[i].curState);
+//        for (int j = 0; j < 5; j++) {
+//            printf("Input: %c\n", fsm[i].pairs[j].input);
+//            printf("NextState: %d\n", fsm[i].pairs[j].nextState);
+//        }
+//        printf("\n");
+//    }
+
     return 0;
 }

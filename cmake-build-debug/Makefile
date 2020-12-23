@@ -98,6 +98,17 @@ edit_cache/fast: edit_cache
 
 .PHONY : edit_cache/fast
 
+# Special rule for the target test
+test:
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Running tests..."
+	/snap/clion/137/bin/cmake/linux/bin/ctest --force-new-ctest-process $(ARGS)
+.PHONY : test
+
+# Special rule for the target test
+test/fast: test
+
+.PHONY : test/fast
+
 # The main all target
 all: cmake_check_build_system
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/tplotkin/ComputerSystems/SemesterProject/cmake-build-debug/CMakeFiles /home/tplotkin/ComputerSystems/SemesterProject/cmake-build-debug/CMakeFiles/progress.marks
@@ -143,6 +154,46 @@ SemesterProject/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/SemesterProject.dir/build.make CMakeFiles/SemesterProject.dir/build
 .PHONY : SemesterProject/fast
 
+#=============================================================================
+# Target rules for targets named Test
+
+# Build rule for target.
+Test: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 Test
+.PHONY : Test
+
+# fast build rule for target.
+Test/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Test.dir/build.make CMakeFiles/Test.dir/build
+.PHONY : Test/fast
+
+Testing/Tests/test1.o: Testing/Tests/test1.c.o
+
+.PHONY : Testing/Tests/test1.o
+
+# target to build an object file
+Testing/Tests/test1.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Test.dir/build.make CMakeFiles/Test.dir/Testing/Tests/test1.c.o
+.PHONY : Testing/Tests/test1.c.o
+
+Testing/Tests/test1.i: Testing/Tests/test1.c.i
+
+.PHONY : Testing/Tests/test1.i
+
+# target to preprocess a source file
+Testing/Tests/test1.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Test.dir/build.make CMakeFiles/Test.dir/Testing/Tests/test1.c.i
+.PHONY : Testing/Tests/test1.c.i
+
+Testing/Tests/test1.s: Testing/Tests/test1.c.s
+
+.PHONY : Testing/Tests/test1.s
+
+# target to generate assembly for a file
+Testing/Tests/test1.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Test.dir/build.make CMakeFiles/Test.dir/Testing/Tests/test1.c.s
+.PHONY : Testing/Tests/test1.c.s
+
 main.o: main.c.o
 
 .PHONY : main.o
@@ -178,7 +229,12 @@ help:
 	@echo "... depend"
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
+	@echo "... test"
 	@echo "... SemesterProject"
+	@echo "... Test"
+	@echo "... Testing/Tests/test1.o"
+	@echo "... Testing/Tests/test1.i"
+	@echo "... Testing/Tests/test1.s"
 	@echo "... main.o"
 	@echo "... main.i"
 	@echo "... main.s"
