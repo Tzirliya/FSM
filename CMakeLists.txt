@@ -4,7 +4,7 @@ project(SemesterProject C)
 set(CMAKE_C_STANDARD 11)
 
 add_executable(SemesterProject main.c)
-add_executable(Test cmake-build-debug/Testing/Tests/test1.c)
+add_executable(Test cmake-build-debug/Testing/Tests/tests.c)
 
 enable_testing()
 

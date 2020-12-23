@@ -77,27 +77,27 @@ include CMakeFiles/Test.dir/progress.make
 # Include the compile flags for this target's objects.
 include CMakeFiles/Test.dir/flags.make
 
-CMakeFiles/Test.dir/Testing/Tests/test1.c.o: CMakeFiles/Test.dir/flags.make
-CMakeFiles/Test.dir/Testing/Tests/test1.c.o: Testing/Tests/test1.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/tplotkin/ComputerSystems/SemesterProject/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building C object CMakeFiles/Test.dir/Testing/Tests/test1.c.o"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/Test.dir/Testing/Tests/test1.c.o   -c /home/tplotkin/ComputerSystems/SemesterProject/cmake-build-debug/Testing/Tests/test1.c
+CMakeFiles/Test.dir/Testing/Tests/tests.c.o: CMakeFiles/Test.dir/flags.make
+CMakeFiles/Test.dir/Testing/Tests/tests.c.o: Testing/Tests/tests.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/tplotkin/ComputerSystems/SemesterProject/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building C object CMakeFiles/Test.dir/Testing/Tests/tests.c.o"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/Test.dir/Testing/Tests/tests.c.o   -c /home/tplotkin/ComputerSystems/SemesterProject/cmake-build-debug/Testing/Tests/tests.c
 
-CMakeFiles/Test.dir/Testing/Tests/test1.c.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/Test.dir/Testing/Tests/test1.c.i"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/tplotkin/ComputerSystems/SemesterProject/cmake-build-debug/Testing/Tests/test1.c > CMakeFiles/Test.dir/Testing/Tests/test1.c.i
+CMakeFiles/Test.dir/Testing/Tests/tests.c.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/Test.dir/Testing/Tests/tests.c.i"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/tplotkin/ComputerSystems/SemesterProject/cmake-build-debug/Testing/Tests/tests.c > CMakeFiles/Test.dir/Testing/Tests/tests.c.i
 
-CMakeFiles/Test.dir/Testing/Tests/test1.c.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/Test.dir/Testing/Tests/test1.c.s"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/tplotkin/ComputerSystems/SemesterProject/cmake-build-debug/Testing/Tests/test1.c -o CMakeFiles/Test.dir/Testing/Tests/test1.c.s
+CMakeFiles/Test.dir/Testing/Tests/tests.c.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/Test.dir/Testing/Tests/tests.c.s"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/tplotkin/ComputerSystems/SemesterProject/cmake-build-debug/Testing/Tests/tests.c -o CMakeFiles/Test.dir/Testing/Tests/tests.c.s
 
 # Object files for target Test
 Test_OBJECTS = \
-"CMakeFiles/Test.dir/Testing/Tests/test1.c.o"
+"CMakeFiles/Test.dir/Testing/Tests/tests.c.o"
 
 # External object files for target Test
 Test_EXTERNAL_OBJECTS =
 
-Test: CMakeFiles/Test.dir/Testing/Tests/test1.c.o
+Test: CMakeFiles/Test.dir/Testing/Tests/tests.c.o
 Test: CMakeFiles/Test.dir/build.make
 Test: CMakeFiles/Test.dir/link.txt
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/tplotkin/ComputerSystems/SemesterProject/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Linking C executable Test"

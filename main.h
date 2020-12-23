@@ -13,7 +13,7 @@
 #include <stdbool.h>
 #define MAX_STATES 50
 #define MAX_INPUT_TYPES 52
-#define ERROR -1
+#define ERROR (-1)
 //#define MAX_INPUTS 250
 
 // TODO: create an enum for error messages so can easily confirm them when testing
@@ -63,7 +63,7 @@ int loadFSM(char *defFilename, struct State *states) {
     FILE* fsmDefFile = fopen(defFilename, "r");
     if (!fsmDefFile) {
         printf("Error opening fsm file\n");
-        return -1;
+        return ERROR;
     }
     int statesCount = 0;
     char curStateStr[12];
@@ -80,20 +80,20 @@ int loadFSM(char *defFilename, struct State *states) {
         for (int i = 0; i < strlen(curStateStr); i++) {
             //printf("curStateStr[%d] = %c\n", i, curStateStr[i]);
             if (!isdigit(curStateStr[i])) {
-                printf("Error: invalid input found in fsm definition file 1.\n");
+                printf("Error: invalid curState found in fsm definition file.\n");
                 return ERROR;
             }
         }
         curState = atoi(curStateStr);
         if (strlen(inputStr) > 1 || inputStr[0] < 'A' || (inputStr[0] > 'Z' && inputStr[0] < 'a') || inputStr[0] > 'z') {
-            printf("Error: invalid input found in fsm definition file 2.\n");
+            printf("Error: invalid input found in fsm definition file.\n");
             return ERROR;
         } else {
             input = inputStr[0];
         }
         for (int i = 0; i < strlen(nextStateStr) - 1; i++) {
             if (!isdigit(nextStateStr[i])) {
-                printf("Error: invalid input found in fsm definition file 3.\n");
+                printf("Error: invalid nextState found in fsm definition file.\n");
                 return ERROR;
             }
         }
@@ -135,6 +135,6 @@ int validateFSM(int statesCount, struct State *fsm) {
             return 0;
         }
     }
-    printf("Error: no state 0 in fsm definition.");
+    printf("Error: no state 0 in fsm definition.\n");
     return ERROR;
 }

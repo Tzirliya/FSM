@@ -128,7 +128,7 @@
 				</MakeCommands>
 			</Target>
 		</Build>
-		<Unit filename="/home/tplotkin/ComputerSystems/SemesterProject/cmake-build-debug/Testing/Tests/test1.c">
+		<Unit filename="/home/tplotkin/ComputerSystems/SemesterProject/cmake-build-debug/Testing/Tests/tests.c">
 			<Option target="Test"/>
 		</Unit>
 		<Unit filename="/home/tplotkin/ComputerSystems/SemesterProject/main.c">

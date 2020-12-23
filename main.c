@@ -90,7 +90,7 @@ int main(int argc, char **argv) {
     printFSM(fsm);
 
     // validate fsm
-    if (validateFSM(statesCount, fsm)) {
+    if (validateFSM(statesCount, fsm) == ERROR) {
         return 1;
     }
 

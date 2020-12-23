@@ -167,32 +167,32 @@ Test/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Test.dir/build.make CMakeFiles/Test.dir/build
 .PHONY : Test/fast
 
-Testing/Tests/test1.o: Testing/Tests/test1.c.o
+Testing/Tests/tests.o: Testing/Tests/tests.c.o
 
-.PHONY : Testing/Tests/test1.o
+.PHONY : Testing/Tests/tests.o
 
 # target to build an object file
-Testing/Tests/test1.c.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Test.dir/build.make CMakeFiles/Test.dir/Testing/Tests/test1.c.o
-.PHONY : Testing/Tests/test1.c.o
+Testing/Tests/tests.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Test.dir/build.make CMakeFiles/Test.dir/Testing/Tests/tests.c.o
+.PHONY : Testing/Tests/tests.c.o
 
-Testing/Tests/test1.i: Testing/Tests/test1.c.i
+Testing/Tests/tests.i: Testing/Tests/tests.c.i
 
-.PHONY : Testing/Tests/test1.i
+.PHONY : Testing/Tests/tests.i
 
 # target to preprocess a source file
-Testing/Tests/test1.c.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Test.dir/build.make CMakeFiles/Test.dir/Testing/Tests/test1.c.i
-.PHONY : Testing/Tests/test1.c.i
+Testing/Tests/tests.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Test.dir/build.make CMakeFiles/Test.dir/Testing/Tests/tests.c.i
+.PHONY : Testing/Tests/tests.c.i
 
-Testing/Tests/test1.s: Testing/Tests/test1.c.s
+Testing/Tests/tests.s: Testing/Tests/tests.c.s
 
-.PHONY : Testing/Tests/test1.s
+.PHONY : Testing/Tests/tests.s
 
 # target to generate assembly for a file
-Testing/Tests/test1.c.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Test.dir/build.make CMakeFiles/Test.dir/Testing/Tests/test1.c.s
-.PHONY : Testing/Tests/test1.c.s
+Testing/Tests/tests.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Test.dir/build.make CMakeFiles/Test.dir/Testing/Tests/tests.c.s
+.PHONY : Testing/Tests/tests.c.s
 
 main.o: main.c.o
 
@@ -232,9 +232,9 @@ help:
 	@echo "... test"
 	@echo "... SemesterProject"
 	@echo "... Test"
-	@echo "... Testing/Tests/test1.o"
-	@echo "... Testing/Tests/test1.i"
-	@echo "... Testing/Tests/test1.s"
+	@echo "... Testing/Tests/tests.o"
+	@echo "... Testing/Tests/tests.i"
+	@echo "... Testing/Tests/tests.s"
 	@echo "... main.o"
 	@echo "... main.i"
 	@echo "... main.s"
