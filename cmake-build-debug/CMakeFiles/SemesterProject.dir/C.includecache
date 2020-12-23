@@ -7,10 +7,6 @@
 #IncludeRegexTransform: 
 
 /home/tplotkin/ComputerSystems/SemesterProject/main.c
-ctype.h
--
-string.h
--
 stdio.h
 -
 main.h

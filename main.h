@@ -4,7 +4,6 @@
 
 #ifndef SEMESTERPROJECT_MAIN_H
 #define SEMESTERPROJECT_MAIN_H
-
 #endif //SEMESTERPROJECT_MAIN_H
 
 #include <ctype.h>
@@ -58,7 +57,7 @@ void printFSM(struct State *fsm) {
     }
 }
 
-int loadFSM(char *defFilename, struct State *states) {
+int loadFSM(char *defFilename, struct State *fsm) {
     // open fsm definition file
     FILE* fsmDefFile = fopen(defFilename, "r");
     if (!fsmDefFile) {
@@ -101,17 +100,17 @@ int loadFSM(char *defFilename, struct State *states) {
         // add data to fsm
         bool updated = false;
         for (int i = 0; (i < MAX_STATES) && !updated; i++) {
-            if (i == statesCount || states[i].curState == curState) {
+            if (i == statesCount || fsm[i].curState == curState) {
                 // check if it's a new state
                 if (i == statesCount) {
-                    states[i].curState = curState;
+                    fsm[i].curState = curState;
                     for (int j = 0; j < MAX_INPUT_TYPES; j++) {
-                        states[i].nextStates[j] = -1;
+                        fsm[i].nextStates[j] = -1;
                     }
                     statesCount++;
                 }
                 // add new pair to state
-                states[i].nextStates[charToIndex(input)] = nextState;
+                fsm[i].nextStates[charToIndex(input)] = nextState;
                 updated = true;
             }
         }
