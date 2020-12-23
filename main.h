@@ -58,12 +58,14 @@ void printFSM(struct State *fsm) {
 }
 
 int loadFSM(char *defFilename, struct State *fsm) {
+    printf("processing FSM inputs file %s\n", defFilename);
     // open fsm definition file
     FILE* fsmDefFile = fopen(defFilename, "r");
     if (!fsmDefFile) {
-        printf("Error opening fsm file\n");
+        printf("Error opening fsm definition file.\n");
         return ERROR;
     }
+    int transitionCount = 0;
     int statesCount = 0;
     char curStateStr[12];
     char inputStr[12];
@@ -87,9 +89,8 @@ int loadFSM(char *defFilename, struct State *fsm) {
         if (strlen(inputStr) > 1 || inputStr[0] < 'A' || (inputStr[0] > 'Z' && inputStr[0] < 'a') || inputStr[0] > 'z') {
             printf("Error: invalid input found in fsm definition file.\n");
             return ERROR;
-        } else {
-            input = inputStr[0];
         }
+        input = inputStr[0];
         for (int i = 0; i < strlen(nextStateStr) - 1; i++) {
             if (!isdigit(nextStateStr[i])) {
                 printf("Error: invalid nextState found in fsm definition file.\n");
@@ -115,25 +116,74 @@ int loadFSM(char *defFilename, struct State *fsm) {
             }
         }
         if (!updated) {
-            printf("Error: too many states");
+            printf("Error: too many states\n");
             return ERROR;
         }
+        transitionCount++;
     }
+    printf("FSM has %d transitions\n", transitionCount);
     // close fsm definition file
     if (fclose(fsmDefFile)) {
-        printf("Error closing fsm file\n");
+        printf("Error closing fsm definition file.\n");
         return ERROR;
     }
     return statesCount;
 }
 
-int validateFSM(int statesCount, struct State *fsm) {
-    // ensure there's a state 0
+int getStateIndex(int statesCount, int curState, struct State *fsm) {
     for (int i = 0; i < statesCount; i++) {
-        if (fsm[i].curState == 0) {
-            return 0;
+        if (fsm[i].curState == curState) {
+            return i;
         }
     }
-    printf("Error: no state 0 in fsm definition.\n");
     return ERROR;
+}
+
+int validateFSM(int statesCount, struct State *fsm) {
+    // ensure there's a state 0
+    if (getStateIndex(statesCount, 0, fsm) == ERROR) {
+        printf("Error: no state 0 in fsm definition.\n");
+        return ERROR;
+    }
+    return 0;
+}
+
+int runFSM(int statesCount, char *inputsFilename, struct State *fsm) {
+    printf("processing FSM inputs file %s\n", inputsFilename);
+    // open fsm inputs file
+    FILE* fsmInputsFile = fopen(inputsFilename, "r");
+    if (!fsmInputsFile) {
+        printf("Error opening fsm inputs file.\n");
+        return ERROR;
+    }
+    int stepCount = 0;
+    int curState = 0;
+    int curStateIndex = getStateIndex(statesCount, curState, fsm);
+    char inputStr[12];
+    char input;
+    int nextState;
+    while (fscanf(fsmInputsFile, "%s", inputStr) != EOF) {
+        // validate data
+        if (strlen(inputStr) > 1 || inputStr[0] < 'A' || (inputStr[0] > 'Z' && inputStr[0] < 'a') || inputStr[0] > 'z') {
+            printf("Error: invalid input found in fsm inputs file.\n");
+            return ERROR;
+        }
+        input = inputStr[0];
+        nextState = fsm[curStateIndex].nextStates[charToIndex(input)];
+        curStateIndex = getStateIndex(statesCount, nextState, fsm);
+        if (curStateIndex == ERROR) {
+            printf("Error: could not find next state.\n");
+            return ERROR;
+        }
+        printf("\tat step %d, input %c transitions FSM from state %d to state %d\n", stepCount, input, curState, nextState);
+        curState = nextState;
+        stepCount++;
+    }
+    printf("after %d steps, state machine finished successfully at state %d\n", stepCount, curState);
+    // close fsm definition file
+    if (fclose(fsmInputsFile)) {
+        printf("Error closing fsm inputs file.\n");
+        return ERROR;
+    }
+    return statesCount;
 }

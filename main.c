@@ -15,10 +15,15 @@ int main(int argc, char **argv) {
     }
 
     // print fsm
-    printFSM(fsm);
+    //printFSM(fsm);
 
     // validate fsm
     if (validateFSM(statesCount, fsm) == ERROR) {
+        return 1;
+    }
+
+    // execute fsm
+    if (runFSM(statesCount, argv[2], fsm) == ERROR) {
         return 1;
     }
 
