@@ -16,16 +16,50 @@
 
 // TODO: create an enum for error messages so can easily confirm them when testing
 
-struct Pair {
-    char input;
-    int nextState;
-};
+//struct Pair {
+//    char input;
+//    int nextState;
+//};
 
 struct State {
     int curState;
-    struct Pair pairs[MAX_INPUT_TYPES];
-    int pairsCount;
+    int nextStates[52];
+    //struct Pair pairs[MAX_INPUT_TYPES];
+    //int pairsCount;
 };
+
+int charToIndex(char c) {
+    int dif = 'a' - 'A';
+    int i = (int) c - (int) 'A';
+    if (c >= 'a') {
+        i -= dif;
+        i += 26;
+    }
+    return i;
+}
+
+char indexToChar(int i) {
+    int dif = (int) ('a' - 'A');
+    int c = i + (int) 'A';
+    if (i >= 26) {
+        c += dif;
+        c -= 26;
+    }
+    return (char) c;
+}
+
+void printFSM(struct State *fsm) {
+    for (int i = 0; i < 4; i++) {
+        printf("CurState: %d\n", fsm[i].curState);
+        for (int j = 0; j < MAX_INPUT_TYPES; j++) {
+            if (fsm[i].nextStates[j] != -1) {
+                printf("Input: %c\t", indexToChar(j));
+                printf("NextState: %d\n", fsm[i].nextStates[j]);
+            }
+        }
+        printf("\n");
+    }
+}
 
 int loadFSM(char *defFilename, struct State *states) {
     // open fsm definition file
@@ -52,20 +86,13 @@ int loadFSM(char *defFilename, struct State *states) {
                 // check if it's a new state
                 if (i == statesCount) {
                     states[i].curState = curState;
-                    states[i].pairsCount = 0;
+                    for (int j = 0; j < MAX_INPUT_TYPES; j++) {
+                        states[i].nextStates[j] = -1;
+                    }
                     statesCount++;
                 }
-                // check for repeated input
-                for (int j = 0; j < states[i].pairsCount; j++) {
-                    if (states[i].pairs[j].nextState == input[0]) {
-                        printf("Error: duplicate input for state.\n");
-                        return 1;
-                    }
-                }
                 // add new pair to state
-                states[i].pairs[states[i].pairsCount].input = input[0];
-                states[i].pairs[states[i].pairsCount].nextState = nextState;
-                states[i].pairsCount++;
+                states[i].nextStates[charToIndex(input[0])] = nextState;
                 updated = true;
             }
         }

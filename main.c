@@ -68,8 +68,6 @@
 //}
 
 
-
-//int main(FILE* fsmDefFile, FILE* fsmInputFile) {
 int main(int argc, char **argv) {
     if (argc != 3) {
         printf("Error incorrect number of arguments.\n");
@@ -87,15 +85,8 @@ int main(int argc, char **argv) {
         return 1;
     }
 
-//    // verify results manually
-//    for (int i = 0; i < 4; i++) {
-//        printf("CurState: %d\n", fsm[i].curState);
-//        for (int j = 0; j < 5; j++) {
-//            printf("Input: %c\n", fsm[i].pairs[j].input);
-//            printf("NextState: %d\n", fsm[i].pairs[j].nextState);
-//        }
-//        printf("\n");
-//    }
+    // print fsm
+    printFSM(fsm);
 
     return 0;
 }
