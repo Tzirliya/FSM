@@ -9,6 +9,12 @@
 /home/tplotkin/ComputerSystems/SemesterProject/cmake-build-debug/Testing/Tests/tests.c
 stdio.h
 -
+string.h
+-
+unistd.h
+-
+fcntl.h
+-
 ../../../main.h
 /home/tplotkin/ComputerSystems/SemesterProject/main.h
 

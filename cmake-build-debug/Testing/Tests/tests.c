@@ -2,7 +2,11 @@
 // Created by tplotkin on 12/21/20.
 //
 #include <stdio.h>
+#include <string.h>
+#include <unistd.h>
+#include <fcntl.h>
 #include "../../../main.h"
+#define TEST_OUTPUT_FILE "Testing/testOutput.txt"
 
 int test_charToIndex();
 int test_charToIndex_basic();
@@ -36,6 +40,11 @@ int test_runFSM_exceed_transition_limit();
 int test_runFSM_invalid_input();
 
 int main() {
+    // redirect stderr to /dev/null
+    int dn = open("/dev/null", O_WRONLY);
+    dup2(dn, 2);
+    close(dn);
+    // run tests and count failures
     int failures = 0;
     failures += test_charToIndex();
     failures += test_indexToChar();
@@ -50,6 +59,34 @@ int main() {
     return 0;
 }
 
+// redirect stdout to a file
+int setup() {
+    fflush(stdout);
+    int oldout = dup(1);
+    int output = open(TEST_OUTPUT_FILE, O_WRONLY | O_CREAT, 0777);
+    if (output == -1) {
+        char e[256] = "opening";
+        strcat(e, TEST_OUTPUT_FILE);
+        perror(e);
+    }
+    dup2(output, 1);
+    close(output);
+    return oldout;
+}
+
+// redirect the redirected stdout back to stdout
+void teardown(int oldout) {
+    fflush(stdout);
+    dup2(oldout, 1);
+    close(oldout);
+}
+
+// clear a file
+void clearFile(char *filename) {
+    FILE* f = fopen(filename, "w");
+    fclose(f);
+}
+
 // all charToIndex tests
 int test_charToIndex() {
     int failures = 0;
@@ -60,9 +97,9 @@ int test_charToIndex() {
 }
 
 // charToIndex uppercase letter
-// should pass
+// should run
 int test_charToIndex_basic() {
-    printf("Running test_charToIndex_basic. Should pass.\n");
+    printf("Running test_charToIndex_basic. Should run.\n");
     if (charToIndex('D') == 3) {
         return 0;
     }
@@ -71,9 +108,9 @@ int test_charToIndex_basic() {
 }
 
 // charToIndex lowercase letter
-// should pass
+// should run
 int test_charToIndex_lowercase() {
-    printf("Running test_charToIndex_lowercase. Should pass.\n");
+    printf("Running test_charToIndex_lowercase. Should run.\n");
     if (charToIndex('d') == 29) {
         return 0;
     }
@@ -91,9 +128,9 @@ int test_indexToChar() {
 }
 
 // charToIndex uppercase number
-// should pass
+// should run
 int test_indexToChar_basic() {
-    printf("Running test_indexToChar_basic. Should pass.\n");
+    printf("Running test_indexToChar_basic. Should run.\n");
     if (indexToChar(4) == 'E') {
         return 0;
     }
@@ -102,9 +139,9 @@ int test_indexToChar_basic() {
 }
 
 // charToIndex lowercase number
-// should pass
+// should run
 int test_indexToChar_lowercase() {
-    printf("Running test_indexToChar_lowercase. Should pass.\n");
+    printf("Running test_indexToChar_lowercase. Should run.\n");
     if (indexToChar(30) == 'e') {
         return 0;
     }
@@ -116,22 +153,31 @@ int test_indexToChar_lowercase() {
 int test_loadFSM() {
     int failures = 0;
     failures += test_loadFSM_basic();
+    clearFile(TEST_OUTPUT_FILE);
     failures += test_loadFSM_negative_curState();
+    clearFile(TEST_OUTPUT_FILE);
     failures += test_loadFSM_invalid_char_input();
+    clearFile(TEST_OUTPUT_FILE);
     failures += test_loadFSM_string_input();
+    clearFile(TEST_OUTPUT_FILE);
     failures += test_loadFSM_too_many_states();
+    clearFile(TEST_OUTPUT_FILE);
     printf("\n%d loadFSM tests failed.\n\n", failures);
     return failures;
 }
 
 // loadFSM with definition file from project description
-// should pass
+// should run
 int test_loadFSM_basic() {
-    printf("Running test_loadFSM_basic. Should pass.\n");
+    printf("Running test_loadFSM_basic. Should run.\n");
     struct State fsm[MAX_STATES];
+    int oldout = setup();
     int statesCount = loadFSM("FSMDefinitionFiles/test1.fsm", fsm);
+    teardown(oldout);
     if (statesCount == ERROR) {
         printf("test_loadFSM_basic failed.\n");
+        printf("Output:\n");
+        printFile(TEST_OUTPUT_FILE);
         return 1;
     }
     return 0;
@@ -142,11 +188,15 @@ int test_loadFSM_basic() {
 int test_loadFSM_negative_curState() {
     printf("Running test_loadFSM_negative_curState. Should error.\n");
     struct State fsm[MAX_STATES];
+    int oldout = setup();
     int statesCount = loadFSM("FSMDefinitionFiles/test2.fsm", fsm);
+    teardown(oldout);
     if (statesCount == ERROR) {
         return 0;
     }
     printf("test_loadFSM_negative_curState failed.\n");
+    printf("Output:\n");
+    printFile(TEST_OUTPUT_FILE);
     return 1;
 }
 
@@ -155,11 +205,15 @@ int test_loadFSM_negative_curState() {
 int test_loadFSM_invalid_char_input() {
     printf("Running test_loadFSM_invalid_char_input. Should error.\n");
     struct State fsm[MAX_STATES];
+    int oldout = setup();
     int statesCount = loadFSM("FSMDefinitionFiles/test3.fsm", fsm);
+    teardown(oldout);
     if (statesCount == ERROR) {
         return 0;
     }
     printf("test_loadFSM_invalid_char_input failed.\n");
+    printf("Output:\n");
+    printFile(TEST_OUTPUT_FILE);
     return 1;
 }
 
@@ -168,11 +222,15 @@ int test_loadFSM_invalid_char_input() {
 int test_loadFSM_string_input() {
     printf("Running test_loadFSM_string_input. Should error.\n");
     struct State fsm[MAX_STATES];
+    int oldout = setup();
     int statesCount = loadFSM("FSMDefinitionFiles/test4.fsm", fsm);
+    teardown(oldout);
     if (statesCount == ERROR) {
         return 0;
     }
     printf("test_loadFSM_string_input failed.\n");
+    printf("Output:\n");
+    printFile(TEST_OUTPUT_FILE);
     return 1;
 }
 
@@ -181,11 +239,15 @@ int test_loadFSM_string_input() {
 int test_loadFSM_too_many_states() {
     printf("Running test_loadFSM_too_many_states. Should error.\n");
     struct State fsm[MAX_STATES];
+    int oldout = setup();
     int statesCount = loadFSM("FSMDefinitionFiles/test5.fsm", fsm);
+    teardown(oldout);
     if (statesCount == ERROR) {
         return 0;
     }
     printf("test_loadFSM_too_many_states failed.\n");
+    printf("Output:\n");
+    printFile(TEST_OUTPUT_FILE);
     return 1;
 }
 
@@ -199,9 +261,9 @@ int test_getStateIndex() {
 }
 
 // getStateIndex looking for state 5 with 4 states named 4-7
-// should pass
+// should run
 int test_getStateIndex_basic() {
-    printf("Running test_getStateIndex_basic. Should pass.\n");
+    printf("Running test_getStateIndex_basic. Should run.\n");
     struct State fsm[MAX_STATES];
     int statesCount = 4;
     for (int i = 0; i < statesCount; i++) {
@@ -217,7 +279,7 @@ int test_getStateIndex_basic() {
 // getStateIndex looking for state 2 with 4 states named 4-7
 // should fail
 int test_getStateIndex_state_does_not_exist() {
-    printf("Running test_getStateIndex_state_does_not_exist. Should pass.\n");
+    printf("Running test_getStateIndex_state_does_not_exist. Should run.\n");
     struct State fsm[MAX_STATES];
     int statesCount = 4;
     for (int i = 0; i < statesCount; i++) {
@@ -241,9 +303,9 @@ int test_validateFSM() {
 }
 
 // validateFSM with states 0-3 in order
-// should pass
+// should run
 int test_validateFSM_basic() {
-    printf("Running test_validateFSM_basic. Should pass.\n");
+    printf("Running test_validateFSM_basic. Should run.\n");
     struct State fsm[MAX_STATES];
     int statesCount = 4;
     for (int i = 0; i < statesCount; i++) {
@@ -257,9 +319,9 @@ int test_validateFSM_basic() {
 }
 
 // validateFSM with states 1,2,3,0
-// should pass
+// should run
 int test_validateFSM_state_0_is_last() {
-    printf("Running test_validateFSM_state_0_is_last. Should pass.\n");
+    printf("Running test_validateFSM_state_0_is_last. Should run.\n");
     struct State fsm[MAX_STATES];
     int statesCount = 4;
     for (int i = 0; i < statesCount-1; i++) {
@@ -293,10 +355,15 @@ int test_validateFSM_no_state_0() {
 int test_runFSM() {
     int failures = 0;
     failures += test_runFSM_basic();
+    clearFile(TEST_OUTPUT_FILE);
     failures += test_runFSM_state_out_of_order();
+    clearFile(TEST_OUTPUT_FILE);
     failures += test_runFSM_next_state_does_not_exist();
+    clearFile(TEST_OUTPUT_FILE);
     failures += test_runFSM_exceed_transition_limit();
+    clearFile(TEST_OUTPUT_FILE);
     failures += test_runFSM_invalid_input();
+    clearFile(TEST_OUTPUT_FILE);
     printf("\n%d runFSM tests failed.\n\n", failures);
     return failures;
 }
@@ -349,30 +416,40 @@ void manuallyBuildScrambledFSM(struct State *fsm) {
 }
 
 // runFSM according to test1.fms and test1.inputs
-// should pass
+// should run
 int test_runFSM_basic() {
-    printf("Running test_runFSM_basic. Should pass.\n");
+    printf("Running test_runFSM_basic. Should run.\n");
     struct State fsm[MAX_STATES];
     int statesCount = 4;
     manuallyBuildFSM(fsm);
+    int oldout = setup();
     if (runFSM(statesCount, "FSMInputFiles/test1.inputs", fsm) != 2) {
+        teardown(oldout);
         printf("test_runFSM_basic failed.\n");
+        printf("Output:\n");
+        printFile(TEST_OUTPUT_FILE);
         return 1;
     }
+    teardown(oldout);
     return 0;
 }
 
 // runFSM according to test1.inputs with states out of order
-// should pass
+// should run
 int test_runFSM_state_out_of_order() {
-    printf("Running test_runFSM_state_out_of_order. Should pass.\n");
+    printf("Running test_runFSM_state_out_of_order. Should run.\n");
     struct State fsm[MAX_STATES];
     int statesCount = 4;
     manuallyBuildScrambledFSM(fsm);
+    int oldout = setup();
     if (runFSM(statesCount, "FSMInputFiles/test1.inputs", fsm) != 1) {
+        teardown(oldout);
         printf("test_runFSM_state_out_of_order failed.\n");
+        printf("Output:\n");
+        printFile(TEST_OUTPUT_FILE);
         return 1;
     }
+    teardown(oldout);
     return 0;
 }
 
@@ -384,10 +461,15 @@ int test_runFSM_next_state_does_not_exist() {
     int statesCount = 4;
     manuallyBuildFSM(fsm);
     fsm[1].nextStates[26] = 6;
+    int oldout = setup();
     if (runFSM(statesCount, "FSMInputFiles/test1.inputs", fsm) == ERROR) {
+        teardown(oldout);
         return 0;
     }
+    teardown(oldout);
     printf("test_runFSM_next_state_does_not_exist failed.\n");
+    printf("Output:\n");
+    printFile(TEST_OUTPUT_FILE);
     return 1;
 }
 
@@ -398,10 +480,15 @@ int test_runFSM_exceed_transition_limit() {
     struct State fsm[MAX_STATES];
     int statesCount = 4;
     manuallyBuildFSM(fsm);
+    int oldout = setup();
     if (runFSM(statesCount, "FSMInputFiles/test2.inputs", fsm) == ERROR) {
+        teardown(oldout);
         return 0;
     }
+    teardown(oldout);
     printf("test_runFSM_exceed_transition_limit failed.\n");
+    printf("Output:\n");
+    printFile(TEST_OUTPUT_FILE);
     return 1;
 }
 
@@ -412,9 +499,14 @@ int test_runFSM_invalid_input() {
     struct State fsm[MAX_STATES];
     int statesCount = 4;
     manuallyBuildFSM(fsm);
+    int oldout = setup();
     if (runFSM(statesCount, "FSMInputFiles/test3.inputs", fsm) == ERROR) {
+        teardown(oldout);
         return 0;
     }
+    teardown(oldout);
     printf("test_runFSM_invalid_input failed.\n");
+    printf("Output:\n");
+    printFile(TEST_OUTPUT_FILE);
     return 1;
 }

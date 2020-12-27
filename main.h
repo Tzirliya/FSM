@@ -16,9 +16,6 @@
 #define DEFAULT_STATE (-1)
 #define ERROR (-1)
 
-// TODO: create an enum for error messages so can easily confirm them when testing
-// TODO: capture stdout when running tests and only print them when tests fail
-
 // holds all necessary details about a state
 struct State {
     int curState;
@@ -72,7 +69,7 @@ int loadFSM(char *defFilename, struct State *fsm) {
     // open fsm definition file
     FILE* fsmDefFile = fopen(defFilename, "r");
     if (!fsmDefFile) {
-        fprintf(stderr, "Error opening fsm definition file.\n");
+        fprintf(stderr, "Error: couldn't open fsm definition file.\n");
         return ERROR;
     }
 
@@ -131,7 +128,7 @@ int loadFSM(char *defFilename, struct State *fsm) {
 
         // if the loop exited without updating, then the MAX_STATES limit was exceeded
         if (!updated) {
-            fprintf(stderr, "Error: too many states\n");
+            fprintf(stderr, "Error: too many states.\n");
             return ERROR;
         }
         transitionCount++;
@@ -141,7 +138,7 @@ int loadFSM(char *defFilename, struct State *fsm) {
 
     // close fsm definition file
     if (fclose(fsmDefFile)) {
-        fprintf(stderr, "Error closing fsm definition file.\n");
+        fprintf(stderr, "Error: couldn't close fsm definition file.\n");
         return ERROR;
     }
 
@@ -178,7 +175,7 @@ int runFSM(int statesCount, char *inputsFilename, struct State *fsm) {
     // open fsm inputs file
     FILE* fsmInputsFile = fopen(inputsFilename, "r");
     if (!fsmInputsFile) {
-        fprintf(stderr, "Error opening fsm inputs file.\n");
+        fprintf(stderr, "Error: couldn't open fsm inputs file.\n");
         return ERROR;
     }
 
@@ -221,9 +218,18 @@ int runFSM(int statesCount, char *inputsFilename, struct State *fsm) {
 
     // close fsm definition file
     if (fclose(fsmInputsFile)) {
-        fprintf(stderr, "Error closing fsm inputs file.\n");
+        fprintf(stderr, "Error: couldn't close fsm inputs file.\n");
         return ERROR;
     }
 
     return curState;
+}
+
+void printFile(char *filename) {
+    FILE *outputFile = fopen(filename, "r");
+    char whitespace;
+    char line[1024];
+    while (fscanf(outputFile, "%[^\n]%c",line , &whitespace) != EOF) {
+        printf("%s%c", line, whitespace);
+    }
 }
