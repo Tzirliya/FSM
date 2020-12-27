@@ -33,6 +33,7 @@ int test_runFSM_basic();
 int test_runFSM_state_out_of_order();
 int test_runFSM_next_state_does_not_exist();
 int test_runFSM_exceed_transition_limit();
+int test_runFSM_invalid_input();
 
 int main() {
     int failures = 0;
@@ -295,6 +296,7 @@ int test_runFSM() {
     failures += test_runFSM_state_out_of_order();
     failures += test_runFSM_next_state_does_not_exist();
     failures += test_runFSM_exceed_transition_limit();
+    failures += test_runFSM_invalid_input();
     printf("\n%d runFSM tests failed.\n\n", failures);
     return failures;
 }
@@ -400,5 +402,19 @@ int test_runFSM_exceed_transition_limit() {
         return 0;
     }
     printf("test_runFSM_exceed_transition_limit failed.\n");
+    return 1;
+}
+
+// runFSM according to test1.fms and test3.inputs which has an invalid input
+// should fail
+int test_runFSM_invalid_input() {
+    printf("Running test_runFSM_invalid_input. Should error.\n");
+    struct State fsm[MAX_STATES];
+    int statesCount = 4;
+    manuallyBuildFSM(fsm);
+    if (runFSM(statesCount, "FSMInputFiles/test3.inputs", fsm) == ERROR) {
+        return 0;
+    }
+    printf("test_runFSM_invalid_input failed.\n");
     return 1;
 }
