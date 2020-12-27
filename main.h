@@ -17,7 +17,8 @@
 #define ERROR (-1)
 
 // TODO: create an enum for error messages so can easily confirm them when testing
-// TODO: add units tests for the rest of the functions here
+// TODO: use fprintf to print errors to stderr
+// TODO: capture stdout when running tests and only print them when tests fail
 
 // holds all necessary details about a state
 struct State {
@@ -51,8 +52,8 @@ char indexToChar(int i) {
 
 // prints an fsm in a readable format
 // returns nothing
-void printFSM(struct State *fsm) {
-    for (int i = 0; i < 4; i++) {
+void printFSM(int statesCount, struct State *fsm) {
+    for (int i = 0; i < statesCount; i++) {
         printf("CurState: %d\n", fsm[i].curState);
         for (int j = 0; j < MAX_INPUT_TYPES; j++) {
             if (fsm[i].nextStates[j] != DEFAULT_STATE) {
@@ -195,7 +196,7 @@ int runFSM(int statesCount, char *inputsFilename, struct State *fsm) {
         // ensure don't exceed MAX_INPUTS limit
         if (stepCount == MAX_INPUTS) {
             printf("Error: exceeded maximum transitions allowed.\n");
-            return 1;
+            return ERROR;
         }
 
         // validate data
@@ -225,5 +226,5 @@ int runFSM(int statesCount, char *inputsFilename, struct State *fsm) {
         return ERROR;
     }
 
-    return statesCount;
+    return curState;
 }

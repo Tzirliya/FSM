@@ -15,7 +15,7 @@ int main(int argc, char **argv) {
     }
 
     // print fsm
-    //printFSM(fsm);
+    //printFSM(statesCount, fsm);
 
     // validate fsm
     if (validateFSM(statesCount, fsm) == ERROR) {
