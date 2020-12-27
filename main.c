@@ -3,7 +3,7 @@
 
 int main(int argc, char **argv) {
     if (argc != 3) {
-        printf("Error incorrect number of arguments.\n");
+        fprintf(stderr, "Error: incorrect number of arguments.\n");
         return 1;
     }
 
