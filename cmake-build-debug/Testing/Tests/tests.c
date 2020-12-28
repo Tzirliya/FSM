@@ -22,6 +22,7 @@ int test_loadFSM_negative_curState();
 int test_loadFSM_invalid_char_input();
 int test_loadFSM_string_input();
 int test_loadFSM_too_many_states();
+int test_loadFSM_duplicate_inputs();
 
 int test_getStateIndex();
 int test_getStateIndex_basic();
@@ -38,6 +39,7 @@ int test_runFSM_state_out_of_order();
 int test_runFSM_next_state_does_not_exist();
 int test_runFSM_exceed_transition_limit();
 int test_runFSM_invalid_input();
+int test_runFSM_input_does_not_exist();
 
 int main() {
     // redirect stderr to /dev/null
@@ -85,6 +87,78 @@ void teardown(int oldout) {
 void clearFile(char *filename) {
     FILE* f = fopen(filename, "w");
     fclose(f);
+}
+
+// not a test
+// manually build fsm according to tests1.fsm
+void manuallyBuildFSM(struct State *fsm) {
+    for (int i = 0; i < 4; i++) {
+        fsm[i].curState = i;
+        for (int j = 0; j < MAX_INPUT_TYPES; j++) {
+            fsm[i].nextStates[j] = DEFAULT_STATE;
+        }
+    }
+    fsm[0].nextStates[26] = 1;
+    fsm[0].nextStates[27] = 1;
+    fsm[0].nextStates[28] = 2;
+    fsm[0].nextStates[29] = 3;
+    fsm[1].nextStates[26] = 0;
+    fsm[1].nextStates[27] = 2;
+    fsm[1].nextStates[28] = 2;
+    fsm[1].nextStates[29] = 3;
+    fsm[2].nextStates[26] = 0;
+    fsm[2].nextStates[27] = 1;
+    fsm[2].nextStates[28] = 2;
+    fsm[2].nextStates[29] = 3;
+    fsm[3].nextStates[26] = 0;
+    fsm[3].nextStates[27] = 1;
+    fsm[3].nextStates[28] = 0;
+    fsm[3].nextStates[29] = 0;
+}
+
+void manuallyBuildScrambledFSM(struct State *fsm) {
+    fsm[0].curState = 2;
+    fsm[1].curState = 0;
+    fsm[2].curState = 3;
+    fsm[3].curState = 1;
+    fsm[2].nextStates[26] = 3;
+    fsm[2].nextStates[27] = 0;
+    fsm[2].nextStates[28] = 0;
+    fsm[2].nextStates[29] = 1;
+    fsm[0].nextStates[26] = 2;
+    fsm[0].nextStates[27] = 3;
+    fsm[0].nextStates[28] = 1;
+    fsm[0].nextStates[29] = 2;
+    fsm[3].nextStates[26] = 2;
+    fsm[3].nextStates[27] = 0;
+    fsm[3].nextStates[28] = 3;
+    fsm[3].nextStates[29] = 2;
+    fsm[1].nextStates[26] = 1;
+    fsm[1].nextStates[27] = 2;
+    fsm[1].nextStates[28] = 2;
+    fsm[1].nextStates[29] = 3;
+}
+
+// compare if two fsm's are equal, assuming they have the same amount of states.
+int equal(int statesCount, struct State *fsm1, struct State *fsm2) {
+    for (int i = 0; i < statesCount; i++) {
+        int foundState = 0;
+        for (int j = 0; j < statesCount; j++) {
+            if (fsm1[i].curState == fsm2[j].curState) {
+                for (int k = 0; k < MAX_INPUT_TYPES; k++) {
+                    if (fsm1[i].nextStates[k] != fsm2[j].nextStates[k]) {
+                        return 0;
+                    }
+                }
+                foundState = 1;
+                break;
+            }
+        }
+        if (!foundState) {
+            return 0;
+        }
+    }
+    return 1;
 }
 
 // all charToIndex tests
@@ -162,6 +236,8 @@ int test_loadFSM() {
     clearFile(TEST_OUTPUT_FILE);
     failures += test_loadFSM_too_many_states();
     clearFile(TEST_OUTPUT_FILE);
+    failures += test_loadFSM_duplicate_inputs();
+    clearFile(TEST_OUTPUT_FILE);
     printf("\n%d loadFSM tests failed.\n\n", failures);
     return failures;
 }
@@ -174,7 +250,9 @@ int test_loadFSM_basic() {
     int oldout = setup();
     int statesCount = loadFSM("FSMDefinitionFiles/test1.fsm", fsm);
     teardown(oldout);
-    if (statesCount == ERROR) {
+    struct State fsmExpected[MAX_STATES];
+    manuallyBuildFSM(fsmExpected);
+    if (statesCount != 4 || !equal(statesCount, fsm, fsmExpected)) {
         printf("test_loadFSM_basic failed.\n");
         printf("Output:\n");
         printFile(TEST_OUTPUT_FILE);
@@ -246,6 +324,23 @@ int test_loadFSM_too_many_states() {
         return 0;
     }
     printf("test_loadFSM_too_many_states failed.\n");
+    printf("Output:\n");
+    printFile(TEST_OUTPUT_FILE);
+    return 1;
+}
+
+// loadFSM with an input used for a state twice
+// should fail
+int test_loadFSM_duplicate_inputs() {
+    printf("Running test_loadFSM_duplicate_inputs. Should error.\n");
+    struct State fsm[MAX_STATES];
+    int oldout = setup();
+    int statesCount = loadFSM("FSMDefinitionFiles/test6.fsm", fsm);
+    teardown(oldout);
+    if (statesCount == ERROR) {
+        return 0;
+    }
+    printf("test_loadFSM_duplicate_inputs failed.\n");
     printf("Output:\n");
     printFile(TEST_OUTPUT_FILE);
     return 1;
@@ -364,55 +459,10 @@ int test_runFSM() {
     clearFile(TEST_OUTPUT_FILE);
     failures += test_runFSM_invalid_input();
     clearFile(TEST_OUTPUT_FILE);
+    failures += test_runFSM_input_does_not_exist();
+    clearFile(TEST_OUTPUT_FILE);
     printf("\n%d runFSM tests failed.\n\n", failures);
     return failures;
-}
-
-// not a test
-// manually build fsm according to tests1.fsm
-void manuallyBuildFSM(struct State *fsm) {
-    for (int i = 0; i < 4; i++) {
-        fsm[i].curState = i;
-    }
-    fsm[0].nextStates[26] = 1;
-    fsm[0].nextStates[27] = 1;
-    fsm[0].nextStates[28] = 2;
-    fsm[0].nextStates[29] = 3;
-    fsm[1].nextStates[26] = 0;
-    fsm[1].nextStates[27] = 2;
-    fsm[1].nextStates[28] = 2;
-    fsm[1].nextStates[29] = 3;
-    fsm[2].nextStates[26] = 0;
-    fsm[2].nextStates[27] = 1;
-    fsm[2].nextStates[28] = 2;
-    fsm[2].nextStates[29] = 3;
-    fsm[3].nextStates[26] = 0;
-    fsm[3].nextStates[27] = 1;
-    fsm[3].nextStates[28] = 0;
-    fsm[3].nextStates[29] = 0;
-}
-
-void manuallyBuildScrambledFSM(struct State *fsm) {
-    fsm[0].curState = 2;
-    fsm[1].curState = 0;
-    fsm[2].curState = 3;
-    fsm[3].curState = 1;
-    fsm[2].nextStates[26] = 3;
-    fsm[2].nextStates[27] = 0;
-    fsm[2].nextStates[28] = 0;
-    fsm[2].nextStates[29] = 1;
-    fsm[0].nextStates[26] = 2;
-    fsm[0].nextStates[27] = 3;
-    fsm[0].nextStates[28] = 1;
-    fsm[0].nextStates[29] = 2;
-    fsm[3].nextStates[26] = 2;
-    fsm[3].nextStates[27] = 0;
-    fsm[3].nextStates[28] = 3;
-    fsm[3].nextStates[29] = 2;
-    fsm[1].nextStates[26] = 1;
-    fsm[1].nextStates[27] = 2;
-    fsm[1].nextStates[28] = 2;
-    fsm[1].nextStates[29] = 3;
 }
 
 // runFSM according to test1.fms and test1.inputs
@@ -506,6 +556,25 @@ int test_runFSM_invalid_input() {
     }
     teardown(oldout);
     printf("test_runFSM_invalid_input failed.\n");
+    printf("Output:\n");
+    printFile(TEST_OUTPUT_FILE);
+    return 1;
+}
+
+// runFSM according to test1.fms and test4.inputs which has an input that doesn't exist for the current state
+// should fail
+int test_runFSM_input_does_not_exist() {
+    printf("Running test_runFSM_input_does_not_exist. Should error.\n");
+    struct State fsm[MAX_STATES];
+    int statesCount = 4;
+    manuallyBuildFSM(fsm);
+    int oldout = setup();
+    if (runFSM(statesCount, "FSMInputFiles/test3.inputs", fsm) == ERROR) {
+        teardown(oldout);
+        return 0;
+    }
+    teardown(oldout);
+    printf("test_runFSM_input_does_not_exist failed.\n");
     printf("Output:\n");
     printFile(TEST_OUTPUT_FILE);
     return 1;

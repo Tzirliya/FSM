@@ -121,7 +121,12 @@ int loadFSM(char *defFilename, struct State *fsm) {
                     statesCount++;
                 }
                 // add new pair to state
-                fsm[i].nextStates[charToIndex(input)] = nextState;
+                int index = charToIndex(input);
+                if (fsm[i].nextStates[index] != -1) {
+                    fprintf(stderr, "Error: cannot add the same input twice for one state.");
+                    return ERROR;
+                }
+                fsm[i].nextStates[index] = nextState;
                 updated = true;
             }
         }
@@ -204,6 +209,10 @@ int runFSM(int statesCount, char *inputsFilename, struct State *fsm) {
 
         // transition to next state
         nextState = fsm[curStateIndex].nextStates[charToIndex(input)];
+        if (nextState == DEFAULT_STATE) {
+            fprintf(stderr, "Error: transition input does not exist for current state.");
+            return ERROR;
+        }
         curStateIndex = getStateIndex(statesCount, nextState, fsm);
         if (curStateIndex == ERROR) {
             fprintf(stderr, "Error: could not find next state.\n");
