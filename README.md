@@ -67,3 +67,7 @@ This implementation is constant time and much simpler to implement, so this is w
 ### Standardize Errors
 Currently, error messages are print statements to ```stderr```.
 Ideally, I'd like to codify the message (perhaps using an enum) so that they can be used while testing to ensure that the correct error occurs.
+
+### Smaller Functions
+Given more time, I'd like to break up the larger functions ```runFSM()``` and ```loadFSM()``` into smaller functions.
+This would allow those smaller functions to have more comprehensive unit tests.
